@@ -36,7 +36,7 @@ const contactController = {
             }
             const { name, email, message } = req.body;
             const sql =
-                'INSERT INTO `contact`(name,email,message,created_at,updated_at) VALUES(?,?,?,?,?)';
+                'INSERT INTO `contact`(`name`, `email`, `message`, `created_at`, `updated_at`) VALUES(?, ?, ?, ?, ?)';
             const [rows, fields] = await connection.query(sql, [
                 name,
                 email,
@@ -44,6 +44,43 @@ const contactController = {
                 new Date(),
                 new Date(),
             ]);
+            res.json({
+                data: rows,
+            });
+        } catch (error) {
+            res.status(500).json({ status: 'Error', message: error.message });
+        }
+    },
+    updateContact: async (req, res) => {
+        try {
+            const { error, value } = validateContactForm(req.body);
+            if (error) {
+                res.status(400).json({ status: 'Error', message: error.details[0].message });
+                return;
+            }
+            const { id } = req.params;
+            const { name, email, message } = req.body;
+            const sql =
+                'UPDATE `contact` SET `name` = ?, `email` = ?, `message` = ?, `updated_at` = ? WHERE `id` = ?';
+            const [rows, fields] = await connection.query(sql, [
+                name,
+                email,
+                message,
+                new Date(),
+                id,
+            ]);
+            res.json({
+                data: rows,
+            });
+        } catch (error) {
+            res.status(500).json({ status: 'Error', message: error.message });
+        }
+    },
+    deleteContact: async (req, res) => {
+        try {
+            const { id } = req.params;
+            const sql = 'DELETE FROM `contact` WHERE `id` = ?';
+            const [rows, fields] = await connection.query(sql, id);
             res.json({
                 data: rows,
             });
