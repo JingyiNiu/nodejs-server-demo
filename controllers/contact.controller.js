@@ -1,10 +1,13 @@
 const connection = require('../config/databse');
 const Joi = require('joi');
 
+const table_name = 'contact';
+
 const contactController = {
     getAllContacts: async (req, res) => {
         try {
-            const [rows, fields] = await connection.query('SELECT * FROM contact');
+            const sql = `SELECT * FROM ${table_name}`;
+            const [rows, fields] = await connection.query(sql);
             res.json({
                 data: rows,
             });
@@ -15,11 +18,8 @@ const contactController = {
     getOneContact: async (req, res) => {
         try {
             const { id } = req.params;
-
-            const [rows, fields] = await connection.query(
-                'SELECT * FROM `contact` WHERE `id` = ?',
-                [id]
-            );
+            const sql = `SELECT * FROM ${table_name} WHERE id = ?`;
+            const [rows, fields] = await connection.query(sql, [id]);
             res.json({
                 data: rows,
             });
@@ -35,8 +35,7 @@ const contactController = {
                 return;
             }
             const { name, email, message } = req.body;
-            const sql =
-                'INSERT INTO `contact`(`name`, `email`, `message`, `created_at`, `updated_at`) VALUES(?, ?, ?, ?, ?)';
+            const sql = `INSERT INTO ${table_name} (name, email, message, created_at, updated_at) VALUES (?, ?, ?, ?, ?)`;
             const [rows, fields] = await connection.query(sql, [
                 name,
                 email,
@@ -60,8 +59,7 @@ const contactController = {
             }
             const { id } = req.params;
             const { name, email, message } = req.body;
-            const sql =
-                'UPDATE `contact` SET `name` = ?, `email` = ?, `message` = ?, `updated_at` = ? WHERE `id` = ?';
+            const sql = `UPDATE ${table_name} SET name = ?, email = ?, message = ?, updated_at = ? WHERE id = ?`;
             const [rows, fields] = await connection.query(sql, [
                 name,
                 email,
@@ -79,7 +77,7 @@ const contactController = {
     deleteContact: async (req, res) => {
         try {
             const { id } = req.params;
-            const sql = 'DELETE FROM `contact` WHERE `id` = ?';
+            const sql = `DELETE FROM ${table_name} WHERE id = ?`;
             const [rows, fields] = await connection.query(sql, id);
             res.json({
                 data: rows,
