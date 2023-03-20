@@ -1,10 +1,6 @@
 const articleController = {
     getAllArticles: (req, res) => {
-        try {
-            res.send('getAllArticles');
-        } catch (error) {
-            console.log(error.message);
-        }
+        res.send('getAllArticles');
     },
 };
 

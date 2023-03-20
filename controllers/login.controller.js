@@ -9,30 +9,26 @@ const table_name = 'user';
 
 const loginController = {
     login: async (req, res) => {
-        try {
-            const { email, password } = req.body;
-            const sql = `SELECT password FROM ${table_name} WHERE email = ?`;
-            const [rows, fields] = await connection.query(sql, [email]);
-            if (!rows.length) {
-                res.status(404).json({ error: 'No user with given email found' });
-                return;
-            }
-
-            const match = await bcrypt.compare(password, rows[0].password);
-
-            if (!match) {
-                res.status(401).json({ error: 'Invalid email or password.' });
-                return;
-            }
-
-            const payload = { email };
-            const options = { expiresIn: '2h' };
-            const token = jwt.sign(payload, secretKey, options);
-
-            res.status(200).send(token);
-        } catch (error) {
-            res.status(500).json({ status: 'Error', message: error.message });
+        const { email, password } = req.body;
+        const sql = `SELECT password FROM ${table_name} WHERE email = ?`;
+        const [rows, fields] = await connection.query(sql, [email]);
+        if (!rows.length) {
+            res.status(404).json({ error: 'No user with given email found' });
+            return;
         }
+
+        const match = await bcrypt.compare(password, rows[0].password);
+
+        if (!match) {
+            res.status(401).json({ error: 'Invalid email or password.' });
+            return;
+        }
+
+        const payload = { email };
+        const options = { expiresIn: '2h' };
+        const token = jwt.sign(payload, secretKey, options);
+
+        res.status(200).send(token);
     },
 };
 
