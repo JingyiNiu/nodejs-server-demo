@@ -8,9 +8,7 @@ const contactController = {
         try {
             const sql = `SELECT * FROM ${table_name}`;
             const [rows, fields] = await connection.query(sql);
-            res.json({
-                data: rows,
-            });
+            res.json({ data: rows });
         } catch (error) {
             res.status(500).json({ status: 'Error', message: error.message });
         }
@@ -20,9 +18,7 @@ const contactController = {
             const { id } = req.params;
             const sql = `SELECT * FROM ${table_name} WHERE id = ?`;
             const [rows, fields] = await connection.query(sql, [id]);
-            res.json({
-                data: rows,
-            });
+            res.json({ data: rows });
         } catch (error) {
             res.json({ status: 'Error', message: error.message });
         }
@@ -43,9 +39,7 @@ const contactController = {
                 new Date(),
                 new Date(),
             ]);
-            res.json({
-                data: rows,
-            });
+            res.json({ data: rows });
         } catch (error) {
             res.status(500).json({ status: 'Error', message: error.message });
         }
@@ -67,9 +61,7 @@ const contactController = {
                 new Date(),
                 id,
             ]);
-            res.json({
-                data: rows,
-            });
+            res.json({ data: rows });
         } catch (error) {
             res.status(500).json({ status: 'Error', message: error.message });
         }
@@ -79,9 +71,7 @@ const contactController = {
             const { id } = req.params;
             const sql = `DELETE FROM ${table_name} WHERE id = ?`;
             const [rows, fields] = await connection.query(sql, id);
-            res.json({
-                data: rows,
-            });
+            res.json({ data: rows });
         } catch (error) {
             res.status(500).json({ status: 'Error', message: error.message });
         }

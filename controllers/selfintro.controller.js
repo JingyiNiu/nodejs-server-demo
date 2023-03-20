@@ -7,9 +7,7 @@ const selfIntroController = {
         try {
             const sql = `SELECT * FROM ${table_name}`;
             const [rows, fields] = await connection.query(sql);
-            res.json({
-                data: rows,
-            });
+            res.json({ data: rows });
         } catch (error) {
             res.status(500).json({ status: 'Error', message: error.message });
         }
@@ -19,9 +17,7 @@ const selfIntroController = {
             const { id } = req.params;
             const sql = `SELECT * FROM ${table_name} WHERE id = ?`;
             const [rows, fields] = await connection.query(sql, [id]);
-            res.json({
-                data: rows,
-            });
+            res.json({ data: rows });
         } catch (error) {
             res.status(500).json({ status: 'Error', message: error.message });
         }
@@ -36,9 +32,7 @@ const selfIntroController = {
                 new Date(),
                 new Date(),
             ]);
-            res.json({
-                data: rows,
-            });
+            res.json({ data: rows });
         } catch (error) {
             res.status(500).json({ status: 'Error', message: error.message });
         }
@@ -49,9 +43,7 @@ const selfIntroController = {
             const { content } = req.body;
             const sql = `UPDATE ${table_name} SET en = ?, updated_at = ? WHERE id = ?`;
             const [rows, fields] = await connection.query(sql, [content, new Date(), id]);
-            res.json({
-                data: rows,
-            });
+            res.json({ data: rows });
         } catch (error) {
             res.status(500).json({ status: 'Error', message: error.message });
         }
@@ -62,9 +54,7 @@ const selfIntroController = {
             const { content } = req.body;
             const sql = `UPDATE ${table_name} SET zh = ?, updated_at = ? WHERE id = ?`;
             const [rows, fields] = await connection.query(sql, [content, new Date(), id]);
-            res.json({
-                data: rows,
-            });
+            res.json({ data: rows });
         } catch (error) {
             res.status(500).json({ status: 'Error', message: error.message });
         }
@@ -74,9 +64,7 @@ const selfIntroController = {
             const { id } = req.params;
             const sql = `DELETE FROM ${table_name} WHERE id = ?`;
             const [rows, fields] = await connection.query(sql, id);
-            res.json({
-                data: rows,
-            });
+            res.json({ data: rows });
         } catch (error) {
             res.status(500).json({ status: 'Error', message: error.message });
         }
