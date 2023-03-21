@@ -1,13 +1,14 @@
 const express = require('express');
 const router = express.Router();
-
+const multer = require('multer');
 const selfIntroController = require('../controllers/selfintro.controller');
+const adminMiddleware = require('../middlewares/adminMiddleware');
 
 router.get('/', selfIntroController.getSelfIntro);
 router.get('/:id', selfIntroController.getSelfIntroById);
-router.post('/', selfIntroController.createSelfIntro);
-router.put('/en/:id', selfIntroController.updateSelfIntroEnglishVersion);
-router.put('/zh/:id', selfIntroController.updateSelfIntroChineseVersion);
-router.delete('/:id', selfIntroController.deleteSelfIntro);
+router.post('/', adminMiddleware, selfIntroController.createSelfIntro);
+router.put('/en/:id', adminMiddleware, selfIntroController.updateSelfIntroEnglishVersion);
+router.put('/zh/:id', adminMiddleware, selfIntroController.updateSelfIntroChineseVersion);
+router.delete('/:id', adminMiddleware, selfIntroController.deleteSelfIntro);
 
 module.exports = router;

@@ -13,7 +13,7 @@ module.exports = (app) => {
     app.use('/api/login', loginRouter);
     app.use('/api/contact', contactRouter);
     app.use('/api/self-intro', selfIntroRouter);
-    app.use('/api/articles', articlesRouter);
+    app.use('/api/article', articlesRouter);
     app.use('/api/images', imagesRouter);
 
     app.use(errorHandler);

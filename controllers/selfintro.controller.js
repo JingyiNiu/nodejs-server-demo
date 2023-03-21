@@ -11,14 +11,16 @@ const selfIntroController = {
 
     getSelfIntroById: async (req, res) => {
         const { id } = req.params;
-        const sql = `SELECT * FROM ${table_name} WHERE id = ?`;
+        const sql = `SELECT * FROM ${table_name} 
+                    WHERE id = ?`;
         const [rows, fields] = await connection.query(sql, [id]);
         res.json({ data: rows });
     },
 
     createSelfIntro: async (req, res) => {
         const { content_en, content_zh } = req.body;
-        const sql = `INSERT INTO ${table_name} (en, zh, created_at, updated_at) VALUES (?, ?, ?, ?)`;
+        const sql = `INSERT INTO ${table_name} (en, zh, created_at, updated_at) 
+                    VALUES (?, ?, ?, ?)`;
         const [rows, fields] = await connection.query(sql, [content_en, content_zh, new Date(), new Date()]);
         res.json({ data: rows });
     },
@@ -26,7 +28,9 @@ const selfIntroController = {
     updateSelfIntroEnglishVersion: async (req, res) => {
         const { id } = req.params;
         const { content } = req.body;
-        const sql = `UPDATE ${table_name} SET en = ?, updated_at = ? WHERE id = ?`;
+        const sql = `UPDATE ${table_name} 
+                    SET en = ?, updated_at = ? 
+                    WHERE id = ?`;
         const [rows, fields] = await connection.query(sql, [content, new Date(), id]);
         res.json({ data: rows });
     },
@@ -34,14 +38,17 @@ const selfIntroController = {
     updateSelfIntroChineseVersion: async (req, res) => {
         const { id } = req.params;
         const { content } = req.body;
-        const sql = `UPDATE ${table_name} SET zh = ?, updated_at = ? WHERE id = ?`;
+        const sql = `UPDATE ${table_name} 
+                    SET zh = ?, updated_at = ? 
+                    WHERE id = ?`;
         const [rows, fields] = await connection.query(sql, [content, new Date(), id]);
         res.json({ data: rows });
     },
 
     deleteSelfIntro: async (req, res) => {
         const { id } = req.params;
-        const sql = `DELETE FROM ${table_name} WHERE id = ?`;
+        const sql = `DELETE FROM ${table_name} 
+                    WHERE id = ?`;
         const [rows, fields] = await connection.query(sql, id);
         res.json({ data: rows });
     },

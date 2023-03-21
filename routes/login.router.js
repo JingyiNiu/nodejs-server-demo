@@ -4,7 +4,8 @@ const multer = require('multer');
 const loginController = require('../controllers/login.controller');
 
 const upload = multer();
+const inputFields = [{ name: 'email' }, { name: 'password' }];
 
-router.post('/', upload.fields([{ name: 'email' }, { name: 'password' }]), loginController.login);
+router.post('/', upload.fields(inputFields), loginController.login);
 
 module.exports = router;

@@ -12,7 +12,8 @@ const contactController = {
 
     getOneContact: async (req, res) => {
         const { id } = req.params;
-        const sql = `SELECT * FROM ${table_name} WHERE id = ?`;
+        const sql = `SELECT * FROM ${table_name} \
+                    WHERE id = ?`;
         const [rows, fields] = await connection.query(sql, [id]);
         res.json({ data: rows });
     },
@@ -23,10 +24,12 @@ const contactController = {
             res.status(400).json({ message: error.details[0].message });
             return;
         }
+        
         const { name, email, message } = req.body;
-        const sql = `INSERT INTO ${table_name} (name, email, message, created_at, updated_at) VALUES (?, ?, ?, ?, ?)`;
+        const sql = `INSERT INTO ${table_name} (name, email, message, created_at, updated_at) 
+                    VALUES (?, ?, ?, ?, ?)`;
         const [rows, fields] = await connection.query(sql, [name, email, message, new Date(), new Date()]);
-        res.json({ data: rows });
+        res.json({ data: 'Record created successfully' });
     },
 
     updateContact: async (req, res) => {
@@ -37,16 +40,18 @@ const contactController = {
         }
         const { id } = req.params;
         const { name, email, message } = req.body;
-        const sql = `UPDATE ${table_name} SET name = ?, email = ?, message = ?, updated_at = ? WHERE id = ?`;
+        const sql = `UPDATE ${table_name} 
+                    SET name = ?, email = ?, message = ?, updated_at = ? 
+                    WHERE id = ?`;
         const [rows, fields] = await connection.query(sql, [name, email, message, new Date(), id]);
-        res.json({ data: rows });
+        res.json({ data: 'Record updated successfully' });
     },
 
     deleteContact: async (req, res) => {
         const { id } = req.params;
         const sql = `DELETE FROM ${table_name} WHERE id = ?`;
-        const [rows, fields] = await connection.query(sql, id);
-        res.json({ data: rows });
+        const [rows, fields] = await connection.query(sql, [id]);
+        res.json({ data: 'Record deleted successfully' });
     },
 };
 
