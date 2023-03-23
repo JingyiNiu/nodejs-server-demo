@@ -4,7 +4,7 @@ const loginRouter = require('./login.router');
 const contactRouter = require('./contact.router');
 const selfIntroRouter = require('./selfintro.router');
 const articlesRouter = require('./articles.router');
-const imagesRouter = require('./images.router');
+const imageRouter = require('./image.router');
 const errorHandler = require('../middlewares/errorHandler');
 
 module.exports = (app) => {
@@ -14,7 +14,7 @@ module.exports = (app) => {
     app.use('/api/contact', contactRouter);
     app.use('/api/self-intro', selfIntroRouter);
     app.use('/api/article', articlesRouter);
-    app.use('/api/images', imagesRouter);
+    app.use('/api/image', imageRouter);
 
     app.use(errorHandler);
 };
