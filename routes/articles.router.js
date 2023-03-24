@@ -9,6 +9,9 @@ const inputFields = [{ name: 'title' }, { name: 'slug' }, { name: 'content' }];
 
 router.get('/', articleController.getAllArticles);
 router.get('/:id', articleController.getOneArticle);
+
+router.get('/admin', adminMiddleware, articleController.getAllArticles);
+router.get('/admin/:id', adminMiddleware, articleController.getOneArticle);
 router.post('/', adminMiddleware, upload.fields(inputFields), articleController.createArticle);
 router.put('/:id', adminMiddleware, upload.fields(inputFields), articleController.updateArticle);
 router.delete('/:id', adminMiddleware, articleController.deleteArticle);
