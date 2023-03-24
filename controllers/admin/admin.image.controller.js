@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 
-const { uploadFile, getPresignedUrl } = require('../config/s3');
+const { uploadFile, getPresignedUrl } = require('../../config/s3');
 
 const imageController = {
     getImage: async (req, res) => {
