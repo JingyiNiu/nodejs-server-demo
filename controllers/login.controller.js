@@ -19,7 +19,7 @@ const loginController = {
                     WHERE U.email = ?`;
         const [rows, fields] = await connection.query(sql, [email]);
         if (!rows.length) {
-            res.status(404).json({ error: 'No user with given email found' });
+            res.status(400).json({ error: 'No user with given email found' });
             return;
         }
 
@@ -29,6 +29,41 @@ const loginController = {
 
         if (!match) {
             res.status(401).json({ error: 'Invalid email or password.' });
+            return;
+        }
+
+        const payload = { email, role };
+        const options = { expiresIn: '2h' };
+        const token = jwt.sign(payload, secretKey, options);
+
+        res.status(200).send(token);
+    },
+    adminLogin: async (req, res) => {
+        const { email, password } = req.body;
+
+        const sql = `SELECT U.password, U.username, U.email, R.name AS role 
+                    FROM ${user_table} U
+                    LEFT JOIN ${user_role_table} UR ON U.id = UR.user_id 
+                    LEFT JOIN ${role_table} R ON R.id = UR.role_id 
+                    WHERE U.email = ?`;
+        const [rows, fields] = await connection.query(sql, [email]);
+
+        if (!rows.length) {
+            res.status(400).json({ error: 'No user with given email found' });
+            return;
+        }
+
+        const match = await bcrypt.compare(password, rows[0].password);
+
+        if (!match) {
+            res.status(401).json({ error: 'Invalid email or password.' });
+            return;
+        }
+
+        const { role } = rows[0];
+
+        if (!role) {
+            res.status(403).json({ error: 'User with given email has no permission' });
             return;
         }
 
