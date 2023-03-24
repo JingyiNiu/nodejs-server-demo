@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 
+const adminValidateController = require("../controllers/admin/admin.validate.controller")
 const adminArticleController = require('../controllers/admin/admin.article.controller');
 const adminContactController = require('../controllers/admin/admin.contact.controller');
 const adminUserController = require('../controllers/admin/admin.user.controller');
@@ -10,6 +11,9 @@ const adminImageController = require('../controllers/admin/admin.image.controlle
 const adminMiddleware = require('../middlewares/adminMiddleware');
 
 const upload = multer();
+
+// Admin Validate
+router.get('/validate', adminMiddleware, adminValidateController.validateAdmin);
 
 // Admin Article
 const articleInputFields = [{ name: 'title' }, { name: 'slug' }, { name: 'content' }];
