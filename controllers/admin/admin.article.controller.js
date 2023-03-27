@@ -39,11 +39,11 @@ const adminController = {
         }
 
         const { id } = req.params;
-        const { title, slug, content } = req.body;
+        const { title, slug, content, is_public } = req.body;
         const sql = `UPDATE ${article_table} 
-                    SET title = ?, slug = ?, content = ?, updated_at = ? 
+                    SET title = ?, slug = ?, content = ?, is_public = ?, updated_at = ? 
                     WHERE id = ? OR slug = ?`;
-        const [rows, fields] = await connection.query(sql, [title, slug, content, new Date(), id, id]);
+        const [rows, fields] = await connection.query(sql, [title, slug, content, is_public, new Date(), id, id]);
         res.json({ data: 'Record updated successfully' });
     },
 
@@ -54,6 +54,16 @@ const adminController = {
         const [rows, fields] = await connection.query(sql, [id]);
         res.json({ data: 'Record deleted successfully' });
     },
+
+    updateArticlePublicStatus: async (req, res) => {
+        const { id } = req.params;
+        const { is_public } = req.body;
+        const sql = `UPDATE ${article_table} 
+                    SET is_public = ?, updated_at = ? 
+                    WHERE id = ? OR slug = ?`;
+        const [rows, fields] = await connection.query(sql, [is_public, new Date(), id, id]);
+        res.json({ data: 'Record updated successfully' });
+    },
 };
 
 module.exports = adminController;
@@ -63,6 +73,7 @@ const validateArticleForm = (articleForm) => {
         title: Joi.string().min(2).max(100).required(),
         slug: Joi.string().min(2).max(100).required(),
         content: Joi.string().min(2).required(),
+        is_public: Joi.number(),
     });
     return schema.validate(articleForm);
 };

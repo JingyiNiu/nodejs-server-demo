@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 
-const adminValidateController = require("../controllers/admin/admin.validate.controller")
+const adminValidateController = require('../controllers/admin/admin.validate.controller');
 const adminArticleController = require('../controllers/admin/admin.article.controller');
 const adminContactController = require('../controllers/admin/admin.contact.controller');
 const adminUserController = require('../controllers/admin/admin.user.controller');
@@ -16,12 +16,18 @@ const upload = multer();
 router.get('/validate', adminMiddleware, adminValidateController.validateAdmin);
 
 // Admin Article
-const articleInputFields = [{ name: 'title' }, { name: 'slug' }, { name: 'content' }];
+const articleInputFields = [{ name: 'title' }, { name: 'slug' }, { name: 'content' }, { name: 'is_public' }];
 router.get('/article', adminMiddleware, adminArticleController.getAllArticles);
 router.get('/article/:id', adminMiddleware, adminArticleController.getOneArticle);
 router.post('/article', adminMiddleware, upload.fields(articleInputFields), adminArticleController.createArticle);
 router.put('/article/:id', adminMiddleware, upload.fields(articleInputFields), adminArticleController.updateArticle);
 router.delete('/article/:id', adminMiddleware, adminArticleController.deleteArticle);
+router.put(
+    '/article-public-status/:id',
+    adminMiddleware,
+    upload.fields([{ name: 'is_public' }]),
+    adminArticleController.updateArticlePublicStatus
+);
 
 // Admin User
 const userInputFields = [{ name: 'username' }, { name: 'email' }, { name: 'password' }];
