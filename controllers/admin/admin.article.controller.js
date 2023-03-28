@@ -5,7 +5,8 @@ const article_table = 'article';
 
 const adminController = {
     getAllArticles: async (req, res) => {
-        const sql = `SELECT * FROM ${article_table}`;
+        const sql = `SELECT * FROM ${article_table}
+                    ORDER BY id DESC`;
         const [rows, fields] = await connection.query(sql);
         res.json({ data: rows });
     },
