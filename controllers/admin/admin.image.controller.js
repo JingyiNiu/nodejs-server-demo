@@ -2,7 +2,7 @@ const crypto = require('crypto');
 
 const { uploadFile, getPresignedUrl } = require('../../config/s3');
 
-const imageController = {
+const adminImageController = {
     getImage: async (req, res) => {
         const url = await getPresignedUrl(req.params.id);
         res.send(url);
@@ -20,4 +20,4 @@ const imageController = {
     },
 };
 
-module.exports = imageController;
+module.exports = adminImageController;

@@ -11,7 +11,7 @@ const adminImageController = require('../controllers/admin/admin.image.controlle
 
 const adminMiddleware = require('../middlewares/adminMiddleware');
 
-const upload = multer();
+const upload = multer({ storage: multer.memoryStorage() });
 
 // Admin Validate
 router.get('/validate', adminMiddleware, adminValidateController.validateAdmin);
@@ -50,7 +50,8 @@ router.put('/contact/:id', adminMiddleware, upload.fields(contactInputFields), a
 router.delete('/contact/:id', adminMiddleware, adminContactController.deleteContact);
 
 // Admin Image
-router.get('/image/:id', adminMiddleware, adminImageController.getImage);
+router.post('/images', adminMiddleware, upload.single('image'), adminImageController.uploadImage);
 router.post('/image', adminMiddleware, upload.single('image'), adminImageController.uploadImage);
+router.get('/image/:id', adminMiddleware, adminImageController.getImage);
 
 module.exports = router;
