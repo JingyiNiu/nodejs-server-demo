@@ -5,7 +5,7 @@ const home_table = 'home';
 
 const homeController = {
     getHomeData: async (req, res) => {
-        const sql = `SELECT * FROM ${home_table}`;
+        const sql = `SELECT * FROM home`;
         const [rows, fields] = await connection.query(sql);
         res.json({ data: rows });
     },
