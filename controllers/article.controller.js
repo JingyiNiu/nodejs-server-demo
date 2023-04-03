@@ -7,7 +7,7 @@ const articleController = {
     getAllArticles: async (req, res) => {
         const sql = `SELECT * FROM ${article_table}
                     WHERE is_public = 1
-                    ORDER BY id DESC`;
+                    ORDER BY sort_order ASC, id DESC`;
         const [rows, fields] = await connection.query(sql);
         res.json({ data: rows });
     },

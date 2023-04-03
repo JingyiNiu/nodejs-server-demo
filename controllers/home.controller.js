@@ -8,7 +8,7 @@ const homeController = {
         const sql1 = `SELECT * FROM ${home_table}`;
         const sql2 = `SELECT * FROM ${article_table}
                         WHERE is_public = 1
-                        ORDER BY id DESC 
+                        ORDER BY sort_order ASC, id DESC 
                         LIMIT 3`;
 
         const [result1, result2] = await Promise.all([connection.query(sql1), connection.query(sql2)]);

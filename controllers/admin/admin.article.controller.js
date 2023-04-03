@@ -6,7 +6,7 @@ const article_table = 'article';
 const adminController = {
     getAllArticles: async (req, res) => {
         const sql = `SELECT * FROM ${article_table}
-                    ORDER BY id DESC`;
+                    ORDER BY sort_order ASC, id DESC`;
         const [rows, fields] = await connection.query(sql);
         res.json({ data: rows });
     },
@@ -40,11 +40,11 @@ const adminController = {
         }
 
         const { id } = req.params;
-        const { title, slug, content, is_public } = req.body;
+        const { title, slug, content, is_public, sort_order } = req.body;
         const sql = `UPDATE ${article_table} 
-                    SET title = ?, slug = ?, content = ?, is_public = ?, updated_at = ? 
+                    SET title = ?, slug = ?, content = ?, is_public = ?, sort_order = ?, updated_at = ? 
                     WHERE id = ? OR slug = ?`;
-        const [rows, fields] = await connection.query(sql, [title, slug, content, is_public, new Date(), id, id]);
+        const [rows, fields] = await connection.query(sql, [title, slug, content, is_public, sort_order, new Date(), id, id]);
         res.json({ data: 'Record updated successfully' });
     },
 
@@ -75,6 +75,7 @@ const validateArticleForm = (articleForm) => {
         slug: Joi.string().min(2).max(100).required(),
         content: Joi.string().min(2).required(),
         is_public: Joi.number(),
+        sort_order: Joi.number(),
     });
     return schema.validate(articleForm);
 };
