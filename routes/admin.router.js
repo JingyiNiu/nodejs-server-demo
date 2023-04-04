@@ -8,6 +8,7 @@ const adminArticleController = require('../controllers/admin/admin.article.contr
 const adminContactController = require('../controllers/admin/admin.contact.controller');
 const adminUserController = require('../controllers/admin/admin.user.controller');
 const adminImageController = require('../controllers/admin/admin.image.controller');
+const adminTagController = require('../controllers/admin/admin.tag.controller')
 
 const adminMiddleware = require('../middlewares/adminMiddleware');
 
@@ -52,5 +53,13 @@ router.delete('/contact/:id', adminMiddleware, adminContactController.deleteCont
 // Admin Image
 router.post('/image', adminMiddleware, upload.single('image'), adminImageController.uploadImage);
 router.get('/image/:id', adminMiddleware, adminImageController.getImage);
+
+// Admin Tag
+const tagInputFields = [{ name: 'title' }, { name: 'slug' }];
+router.get('/tag', adminMiddleware, adminTagController.getAllTags);
+router.get('/tag/:id', adminMiddleware, adminTagController.getOneTag);
+router.post('/tag', adminMiddleware, upload.fields(tagInputFields), adminTagController.createTag);
+router.put('/tag/:id', adminMiddleware, upload.fields(tagInputFields), adminTagController.updateTag);
+router.delete('/tag/:id', adminMiddleware, adminTagController.deleteTag);
 
 module.exports = router;
