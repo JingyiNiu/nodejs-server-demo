@@ -1,11 +1,11 @@
 const connection = require('../config/databse');
 
-const home_table = 'home';
-const article_table = 'article';
+const intro_table = 'intros';
+const article_table = 'articles';
 
 const homeController = {
     getHomeData: async (req, res) => {
-        const sql1 = `SELECT * FROM ${home_table}`;
+        const sql1 = `SELECT * FROM ${intro_table}`;
         const sql2 = `SELECT * FROM ${article_table}
                         WHERE is_public = 1
                         ORDER BY sort_order ASC, id DESC 

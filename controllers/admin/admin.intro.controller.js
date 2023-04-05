@@ -1,16 +1,16 @@
 const connection = require('../../config/databse');
 const Joi = require('joi');
 
-const home_table = 'home';
+const intro_table = 'intros';
 
-const homeController = {
-    getHomeData: async (req, res) => {
-        const sql = `SELECT * FROM home`;
+const introController = {
+    getIntroData: async (req, res) => {
+        const sql = `SELECT * FROM ${intro_table}`;
         const [rows, fields] = await connection.query(sql);
         res.json({ data: rows });
     },
-    updateHomeData: async (req, res) => {
-        const { error, value } = validateHomeForm(req.body);
+    updateIntroData: async (req, res) => {
+        const { error, value } = validateIntroForm(req.body);
         if (error) {
             res.status(400).json({ message: error.details[0].message });
             return;
@@ -18,7 +18,7 @@ const homeController = {
 
         const { id } = req.params;
         const { title, content } = req.body;
-        const sql = `UPDATE ${home_table} 
+        const sql = `UPDATE ${intro_table} 
                     SET title = ?, content = ?, updated_at = ? 
                     WHERE id = ?`;
         const [rows, fields] = await connection.query(sql, [title, content, new Date(), id]);
@@ -26,9 +26,9 @@ const homeController = {
     },
 };
 
-module.exports = homeController;
+module.exports = introController;
 
-const validateHomeForm = (homeForm) => {
+const validateIntroForm = (homeForm) => {
     const schema = Joi.object({
         title: Joi.string().min(2).required(),
         content: Joi.string().min(2).required(),

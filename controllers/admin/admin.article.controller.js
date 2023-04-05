@@ -1,9 +1,9 @@
 const connection = require('../../config/databse');
 const Joi = require('joi');
 
-const article_table = 'article';
-const tag_table = 'tag';
-const article_tag_table = 'article_tag';
+const article_table = 'articles';
+const tag_table = 'tags';
+const article_tag_table = 'article_tags';
 
 const adminArticleController = {
     getAllArticles: async (req, res) => {
@@ -15,14 +15,25 @@ const adminArticleController = {
 
     getOneArticle: async (req, res) => {
         const { id } = req.params;
-        const sql = `SELECT A.*, GROUP_CONCAT(T.name) AS tags 
+        const sql = `SELECT A.*, GROUP_CONCAT(T.id, ':', T.name SEPARATOR ';') AS tags 
                     FROM ${article_table} A
                     LEFT JOIN ${article_tag_table} AT ON A.id = AT.article_id
                     LEFT JOIN ${tag_table} T ON AT.tag_id = T.id
                     WHERE A.id = ? OR A.slug = ?
                     GROUP BY A.id`;
         const [result] = await connection.query(sql, [id, id]);
-        res.json({ data: result });
+
+        const article = result.map((row) => {
+            const tags = row.tags
+                ? row.tags.split(';').map((tag) => {
+                      const [id, name] = tag.split(':');
+                      return { id, name };
+                  })
+                : [];
+            return { id: row.id, title: row.title, content: row.content, tags };
+        });
+
+        res.json({ data: article });
     },
 
     createArticle: async (req, res) => {
@@ -92,7 +103,7 @@ const validateArticleForm = (articleForm) => {
         content: Joi.string().min(2).required(),
         is_public: Joi.number(),
         sort_order: Joi.number(),
-        tags:Joi.array()
+        tags: Joi.array(),
     });
     return schema.validate(articleForm);
 };

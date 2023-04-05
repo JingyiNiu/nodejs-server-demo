@@ -1,7 +1,7 @@
 const connection = require('../config/databse');
 const Joi = require('joi');
 
-const table_name = 'contact';
+const table_name = 'contacts';
 
 const contactController = {
     createContact: async (req, res) => {

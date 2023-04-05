@@ -1,6 +1,6 @@
 const connection = require('../config/databse');
 
-const article_table = 'article';
+const article_table = 'articles';
 
 const articleController = {
     getAllArticles: async (req, res) => {

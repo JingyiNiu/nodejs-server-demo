@@ -5,9 +5,9 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const secretKey = process.env.TOKEN_SECRET_KEY;
-const user_table = 'user';
-const role_table = 'role';
-const user_role_table = 'user_role';
+const user_table = 'users';
+const role_table = 'roles';
+const user_role_table = 'user_roles';
 
 const loginController = {
     login: async (req, res) => {
@@ -17,7 +17,9 @@ const loginController = {
                     LEFT JOIN ${user_role_table} UR ON U.id = UR.user_id 
                     LEFT JOIN ${role_table} R ON R.id = UR.role_id 
                     WHERE U.email = ?`;
+
         const [rows, fields] = await connection.query(sql, [email]);
+        
         if (!rows.length) {
             res.status(400).json({ error: 'No user with given email found' });
             return;

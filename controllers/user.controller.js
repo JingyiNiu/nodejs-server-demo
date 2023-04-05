@@ -3,7 +3,7 @@ const Joi = require('joi');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
-const user_table = 'user';
+const user_table = 'users';
 
 const userController = {
     createUser: async (req, res) => {

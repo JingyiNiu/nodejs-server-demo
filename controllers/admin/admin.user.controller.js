@@ -1,9 +1,9 @@
 const connection = require('../../config/databse');
 const Joi = require('joi');
 
-const user_table = 'user';
-const role_table = 'role';
-const user_role_table = 'user_role';
+const user_table = 'users';
+const role_table = 'roles';
+const user_role_table = 'user_roles';
 
 const userController = {
     getAllUsers: async (req, res) => {

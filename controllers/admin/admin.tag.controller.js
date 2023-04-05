@@ -1,7 +1,7 @@
 const connection = require('../../config/databse');
 const Joi = require('joi');
 
-const tag_table = 'tag';
+const tag_table = 'tags';
 
 const adminTagController = {
     getAllTags: async (req, res) => {

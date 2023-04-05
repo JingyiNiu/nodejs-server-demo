@@ -5,6 +5,7 @@ const userRouter = require('./user.router');
 const contactRouter = require('./contact.router');
 const articlesRouter = require('./articles.router');
 const imageRouter = require('./image.router');
+const testRouter = require('./test.router');
 
 const adminRouter = require('./admin.router');
 
@@ -18,6 +19,7 @@ module.exports = (app) => {
     app.use('/api/contact', contactRouter);
     app.use('/api/article', articlesRouter);
     app.use('/api/image', imageRouter);
+    app.use('/api/test', testRouter);
 
     app.use('/api/admin', adminRouter);
 

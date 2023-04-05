@@ -3,7 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 
 const adminValidateController = require('../controllers/admin/admin.validate.controller');
-const adminHomeController = require('../controllers/admin/admin.home.controller');
+const adminIntroController = require('../controllers/admin/admin.intro.controller');
 const adminArticleController = require('../controllers/admin/admin.article.controller');
 const adminContactController = require('../controllers/admin/admin.contact.controller');
 const adminUserController = require('../controllers/admin/admin.user.controller');
@@ -17,10 +17,10 @@ const upload = multer({ storage: multer.memoryStorage() });
 // Admin Validate
 router.get('/validate', adminMiddleware, adminValidateController.validateAdmin);
 
-// Admin Home
+// Admin Intro
 const homeInputFields = [{ name: 'intro_en' }, { name: 'intro_zh' }];
-router.get('/home', adminMiddleware, adminHomeController.getHomeData);
-router.put('/home/:id', adminMiddleware, upload.fields(homeInputFields), adminHomeController.updateHomeData);
+router.get('/intro', adminMiddleware, adminIntroController.getIntroData);
+router.put('/intro/:id', adminMiddleware, upload.fields(homeInputFields), adminIntroController.updateIntroData);
 
 // Admin Article
 const articleInputFields = [{ name: 'title' }, { name: 'slug' }, { name: 'content' }, { name: 'is_public' }];
