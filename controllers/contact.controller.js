@@ -1,7 +1,5 @@
-const connection = require('../config/databse');
+const Contact = require('../models/Contact.model');
 const Joi = require('joi');
-
-const table_name = 'contacts';
 
 const contactController = {
     createContact: async (req, res) => {
@@ -10,12 +8,10 @@ const contactController = {
             res.status(400).json({ message: error.details[0].message });
             return;
         }
-        
+
         const { name, email, message } = req.body;
-        const sql = `INSERT INTO ${table_name} (name, email, message, created_at, updated_at) 
-                    VALUES (?, ?, ?, ?, ?)`;
-        const [rows, fields] = await connection.query(sql, [name, email, message, new Date(), new Date()]);
-        res.json({ data: 'Record created successfully' });
+        const result = await Contact.create({ name, email, message });
+        res.json(result);
     },
 };
 

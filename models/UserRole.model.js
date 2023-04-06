@@ -1,27 +1,18 @@
 const sequelize = require('../config/databse');
 const { DataTypes } = require('sequelize');
 
-const User = sequelize.define(
-    'User',
+const UserRole = sequelize.define(
+    'UserRole',
     {
-        id: {
+        user_id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
-            autoIncrement: true,
+            field: 'user_id',
         },
-        username: {
+        role_id: {
             type: DataTypes.STRING,
-            unique: true,
-            allowNull: false,
-        },
-        email: {
-            type: DataTypes.STRING,
-            unique: true,
-            allowNull: false,
-        },
-        password: {
-            type: DataTypes.STRING,
-            allowNull: false,
+            primaryKey: true,
+            field: 'role_id',
         },
         createdAt: {
             type: DataTypes.DATE,
@@ -33,10 +24,10 @@ const User = sequelize.define(
         },
     },
     {
-        tableName: 'users',
+        tableName: 'user_roles',
         timestamps: true,
         underscored: true,
     }
 );
 
-module.exports = User;
+module.exports = UserRole;

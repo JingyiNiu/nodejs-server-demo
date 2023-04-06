@@ -1,27 +1,28 @@
 const connection = require('../config/databse');
-
-const article_table = 'articles';
+const Article = require('../models/Article.model');
 
 const articleController = {
     getAllArticles: async (req, res) => {
-        const sql = `SELECT * FROM ${article_table}
-                    WHERE is_public = 1
-                    ORDER BY sort_order ASC, id DESC`;
-        const [results] = await connection.query(sql);
-        res.json({ data: results });
+        const results = await Article.findAll({
+            where: {
+                is_public: 1,
+            },
+            order: [
+                ['sort_order', 'ASC'],
+                ['id', 'DESC'],
+            ],
+        });
+        res.json(results);
     },
 
     getOneArticle: async (req, res) => {
         const { id } = req.params;
-        const updateSql = `UPDATE ${article_table} 
-                            SET view_count = view_count + 1 
-                            WHERE id = ? OR slug = ?`;
-        const selectSql = `SELECT * FROM ${article_table} 
-                            WHERE (id = ? AND is_public = 1)
-                            OR (slug = ? AND is_public = 1)`;
-        const [updateResult] = await connection.query(updateSql, [id, id]);
-        const [selectResult] = await connection.query(selectSql, [id, id]);
-        res.json({ data: selectResult });
+        await Article.increment('view_count', { where: { [Sequelize.Op.or]: [{ id }, { slug: id }] } });
+
+        const results = await Article.findOne({
+            where: { [Sequelize.Op.or]: [{ id }, { slug: id }], is_public: true },
+        });
+        res.json(results);
     },
 };
 

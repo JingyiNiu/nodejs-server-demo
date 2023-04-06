@@ -1,25 +1,23 @@
 const sequelize = require('../config/databse');
 const { DataTypes } = require('sequelize');
 
-const User = sequelize.define(
-    'User',
+const Contact = sequelize.define(
+    'Contact',
     {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
         },
-        username: {
+        name: {
             type: DataTypes.STRING,
-            unique: true,
             allowNull: false,
         },
         email: {
             type: DataTypes.STRING,
-            unique: true,
             allowNull: false,
         },
-        password: {
+        message: {
             type: DataTypes.STRING,
             allowNull: false,
         },
@@ -33,10 +31,10 @@ const User = sequelize.define(
         },
     },
     {
-        tableName: 'users',
+        tableName: 'contacts',
         timestamps: true,
         underscored: true,
     }
 );
 
-module.exports = User;
+module.exports = Contact;
