@@ -10,12 +10,12 @@ const auth = (req, res, next) => {
         return res.status(401).send('Access denied. No token provided');
     }
     try {
-        // const decoded = jwt.verify(token, token_secret_key);
-        // const role = decoded.role;
+        const decoded = jwt.verify(token, token_secret_key);
+        const role = decoded.role;
 
-        // if (role !== 'admin') {
-        //     return res.status(403).send("You don't have permission to access this resource" );
-        // }
+        if (role !== 'admin') {
+            return res.status(403).send("You don't have permission to access this resource" );
+        }
 
         next();
     } catch (error) {

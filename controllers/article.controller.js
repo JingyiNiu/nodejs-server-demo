@@ -1,9 +1,10 @@
-const connection = require('../config/databse');
+const { Sequelize } = require('sequelize');
 const Article = require('../models/Article.model');
+const Tag = require('../models/Tag.model');
 
 const articleController = {
     getAllArticles: async (req, res) => {
-        const results = await Article.findAll({
+        const articles = await Article.findAll({
             where: {
                 is_public: 1,
             },
@@ -11,18 +12,28 @@ const articleController = {
                 ['sort_order', 'ASC'],
                 ['id', 'DESC'],
             ],
+            include: {
+                model: Tag,
+                through: { attributes: [] },
+            },
         });
-        res.json(results);
+        res.json(articles);
     },
 
     getOneArticle: async (req, res) => {
         const { id } = req.params;
-        await Article.increment('view_count', { where: { [Sequelize.Op.or]: [{ id }, { slug: id }] } });
-
-        const results = await Article.findOne({
-            where: { [Sequelize.Op.or]: [{ id }, { slug: id }], is_public: true },
+        await Article.increment('view_count', {
+            where: { [Sequelize.Op.or]: [{ id }, { slug: id }] },
         });
-        res.json(results);
+
+        const article = await Article.findOne({
+            where: { [Sequelize.Op.or]: [{ id }, { slug: id }], is_public: true },
+            include: {
+                model: Tag,
+                through: { attributes: [] },
+            },
+        });
+        res.json(article);
     },
 };
 

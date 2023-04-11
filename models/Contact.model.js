@@ -2,7 +2,7 @@ const sequelize = require('../config/databse');
 const { DataTypes } = require('sequelize');
 
 const Contact = sequelize.define(
-    'Contact',
+    'contact',
     {
         id: {
             type: DataTypes.INTEGER,
@@ -21,19 +21,12 @@ const Contact = sequelize.define(
             type: DataTypes.STRING,
             allowNull: false,
         },
-        createdAt: {
-            type: DataTypes.DATE,
-            field: 'created_at',
-        },
-        updatedAt: {
-            type: DataTypes.DATE,
-            field: 'updated_at',
-        },
     },
     {
         tableName: 'contacts',
         timestamps: true,
-        underscored: true,
+        createdAt: 'created_at',
+        updatedAt: 'updated_at',
     }
 );
 

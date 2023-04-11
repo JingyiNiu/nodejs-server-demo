@@ -1,39 +1,34 @@
 const connection = require('../../config/databse');
 const Joi = require('joi');
 
-const article_table = 'articles';
-const tag_table = 'tags';
-const article_tag_table = 'article_tags';
+const Article = require('../../models/Article.model');
+const Tag = require('../../models/Tag.model');
 
 const adminArticleController = {
     getAllArticles: async (req, res) => {
-        const sql = `SELECT * FROM ${article_table}
-                    ORDER BY sort_order ASC, id DESC`;
-        const [result] = await connection.query(sql);
-        res.json({ data: result });
+        const articles = await Article.findAll({
+            order: [
+                ['sort_order', 'ASC'],
+                ['id', 'DESC'],
+            ],
+            include: {
+                model: Tag,
+                through: { attributes: [] },
+            },
+        });
+        res.json(articles);
     },
 
     getOneArticle: async (req, res) => {
         const { id } = req.params;
-        const sql = `SELECT A.*, GROUP_CONCAT(T.id, ':', T.name SEPARATOR ';') AS tags 
-                    FROM ${article_table} A
-                    LEFT JOIN ${article_tag_table} AT ON A.id = AT.article_id
-                    LEFT JOIN ${tag_table} T ON AT.tag_id = T.id
-                    WHERE A.id = ? OR A.slug = ?
-                    GROUP BY A.id`;
-        const [result] = await connection.query(sql, [id, id]);
-
-        const article = result.map((row) => {
-            const tags = row.tags
-                ? row.tags.split(';').map((tag) => {
-                      const [id, name] = tag.split(':');
-                      return { id, name };
-                  })
-                : [];
-            return { id: row.id, title: row.title, content: row.content, tags };
+        const article = await Article.findAll({
+            where: { id },
+            include: {
+                model: Tag,
+                through: { attributes: [] },
+            },
         });
-
-        res.json({ data: article });
+        res.json(article);
     },
 
     createArticle: async (req, res) => {
@@ -73,24 +68,6 @@ const adminArticleController = {
         const values = tags.map((tagId) => [id, tagId]);
         await connection.query(update_tag_sql, [values]);
         res.json({ data: result });
-    },
-
-    deleteArticle: async (req, res) => {
-        const { id } = req.params;
-        const sql = `DELETE FROM ${article_table} 
-                    WHERE id = ?`;
-        const [result] = await connection.query(sql, [id]);
-        res.json({ data: 'Record deleted successfully' });
-    },
-
-    updateArticlePublicStatus: async (req, res) => {
-        const { id } = req.params;
-        const { is_public } = req.body;
-        const sql = `UPDATE ${article_table} 
-                    SET is_public = ?, updated_at = ? 
-                    WHERE id = ? OR slug = ?`;
-        const [result] = await connection.query(sql, [is_public, new Date(), id, id]);
-        res.json({ data: 'Record updated successfully' });
     },
 };
 

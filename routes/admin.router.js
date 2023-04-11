@@ -8,7 +8,8 @@ const adminArticleController = require('../controllers/admin/admin.article.contr
 const adminContactController = require('../controllers/admin/admin.contact.controller');
 const adminUserController = require('../controllers/admin/admin.user.controller');
 const adminImageController = require('../controllers/admin/admin.image.controller');
-const adminTagController = require('../controllers/admin/admin.tag.controller')
+const adminTagController = require('../controllers/admin/admin.tag.controller');
+const adminRoleController = require('../controllers/admin/admin.role.controller');
 
 const adminMiddleware = require('../middlewares/adminMiddleware');
 
@@ -28,13 +29,6 @@ router.get('/article', adminMiddleware, adminArticleController.getAllArticles);
 router.get('/article/:id', adminMiddleware, adminArticleController.getOneArticle);
 router.post('/article', adminMiddleware, upload.fields(articleInputFields), adminArticleController.createArticle);
 router.put('/article/:id', adminMiddleware, upload.fields(articleInputFields), adminArticleController.updateArticle);
-router.delete('/article/:id', adminMiddleware, adminArticleController.deleteArticle);
-router.put(
-    '/article-public-status/:id',
-    adminMiddleware,
-    upload.fields([{ name: 'is_public' }]),
-    adminArticleController.updateArticlePublicStatus
-);
 
 // Admin User
 const userInputFields = [{ name: 'username' }, { name: 'email' }, { name: 'password' }];
@@ -44,11 +38,8 @@ router.put('/user/:id', adminMiddleware, upload.fields(userInputFields), adminUs
 router.delete('/user/:id', adminMiddleware, adminUserController.deleteUser);
 
 // Admin Contact
-const contactInputFields = [{ name: 'name' }, { name: 'email' }, { name: 'message' }];
 router.get('/contact', adminMiddleware, adminContactController.getAllContacts);
 router.get('/contact/:id', adminMiddleware, adminContactController.getOneContact);
-router.put('/contact/:id', adminMiddleware, upload.fields(contactInputFields), adminContactController.updateContact);
-router.delete('/contact/:id', adminMiddleware, adminContactController.deleteContact);
 
 // Admin Image
 router.post('/image', adminMiddleware, upload.single('image'), adminImageController.uploadImage);
@@ -62,4 +53,7 @@ router.post('/tag', adminMiddleware, upload.fields(tagInputFields), adminTagCont
 router.put('/tag/:id', adminMiddleware, upload.fields(tagInputFields), adminTagController.updateTag);
 router.delete('/tag/:id', adminMiddleware, adminTagController.deleteTag);
 
+const roleInputFields = [{ name: 'name' }];
+router.get('/role', adminRoleController.getAllRoles);
+router.post('/role', upload.fields(roleInputFields), adminRoleController.createRole);
 module.exports = router;

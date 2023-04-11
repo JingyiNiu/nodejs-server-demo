@@ -1,40 +1,39 @@
-const connection = require('../config/databse');
 const Joi = require('joi');
 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const secretKey = process.env.TOKEN_SECRET_KEY;
-const user_table = 'users';
-const role_table = 'roles';
-const user_role_table = 'user_roles';
+const User = require('../models/User.model');
+const Role = require('../models/Role.model');
 
 const loginController = {
     login: async (req, res) => {
         const { email, password } = req.body;
-        const sql = `SELECT U.password, U.username, U.email, R.name AS role 
-                    FROM ${user_table} U
-                    LEFT JOIN ${user_role_table} UR ON U.id = UR.user_id 
-                    LEFT JOIN ${role_table} R ON R.id = UR.role_id 
-                    WHERE U.email = ?`;
+        const user = await User.findOne({
+            where: { email },
+            attributes: ['id', 'username', 'email', 'password'],
+            include: {
+                model: Role,
+                attributes: ['name'],
+            },
+        });
 
-        const [rows, fields] = await connection.query(sql, [email]);
-        
-        if (!rows.length) {
+        if (!user) {
             res.status(400).json({ error: 'No user with given email found' });
             return;
         }
 
-        const { role } = rows[0];
+        const { role } = user;
 
-        const match = await bcrypt.compare(password, rows[0].password);
+        const match = await bcrypt.compare(password, user.password);
 
         if (!match) {
             res.status(401).json({ error: 'Invalid email or password.' });
             return;
         }
 
-        const payload = { email, role };
+        const payload = { email, role: role.name };
         const options = { expiresIn: '2h' };
         const token = jwt.sign(payload, secretKey, options);
 
@@ -42,34 +41,35 @@ const loginController = {
     },
     adminLogin: async (req, res) => {
         const { email, password } = req.body;
+        const user = await User.findOne({
+            where: { email },
+            attributes: ['id', 'username', 'email', 'password'],
+            include: {
+                model: Role,
+                attributes: ['name'],
+            },
+        });
 
-        const sql = `SELECT U.password, U.username, U.email, R.name AS role 
-                    FROM ${user_table} U
-                    LEFT JOIN ${user_role_table} UR ON U.id = UR.user_id 
-                    LEFT JOIN ${role_table} R ON R.id = UR.role_id 
-                    WHERE U.email = ?`;
-        const [rows, fields] = await connection.query(sql, [email]);
-
-        if (!rows.length) {
+        if (!user) {
             res.status(400).json({ error: 'No user with given email found' });
             return;
         }
 
-        const match = await bcrypt.compare(password, rows[0].password);
+        const { role } = user;
+
+        const match = await bcrypt.compare(password, user.password);
 
         if (!match) {
             res.status(401).json({ error: 'Invalid email or password.' });
             return;
         }
 
-        const { role } = rows[0];
-
-        if (!role) {
+        if (role.name !== 'admin') {
             res.status(403).json({ error: 'User with given email has no permission' });
             return;
         }
 
-        const payload = { email, role };
+        const payload = { email, role: role.name };
         const options = { expiresIn: '2h' };
         const token = jwt.sign(payload, secretKey, options);
 
