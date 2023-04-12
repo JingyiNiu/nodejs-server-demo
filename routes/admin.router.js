@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 
+const adminMiddleware = require('../middlewares/adminMiddleware');
+const upload = multer({ storage: multer.memoryStorage() });
+
 const adminValidateController = require('../controllers/admin/admin.validate.controller');
 const adminIntroController = require('../controllers/admin/admin.intro.controller');
 const adminArticleController = require('../controllers/admin/admin.article.controller');
@@ -11,17 +14,13 @@ const adminImageController = require('../controllers/admin/admin.image.controlle
 const adminTagController = require('../controllers/admin/admin.tag.controller');
 const adminRoleController = require('../controllers/admin/admin.role.controller');
 
-const adminMiddleware = require('../middlewares/adminMiddleware');
-
-const upload = multer({ storage: multer.memoryStorage() });
-
 // Admin Validate
 router.get('/validate', adminMiddleware, adminValidateController.validateAdmin);
 
 // Admin Intro
 const homeInputFields = [{ name: 'intro_en' }, { name: 'intro_zh' }];
-router.get('/intro', adminMiddleware, adminIntroController.getIntroData);
-router.put('/intro/:id', adminMiddleware, upload.fields(homeInputFields), adminIntroController.updateIntroData);
+router.get('/intro', adminMiddleware, adminIntroController.getIntros);
+router.put('/intro/:id', adminMiddleware, upload.fields(homeInputFields), adminIntroController.updateIntro);
 
 // Admin Article
 const articleInputFields = [{ name: 'title' }, { name: 'slug' }, { name: 'content' }, { name: 'is_public' }];
@@ -34,7 +33,7 @@ router.put('/article/:id', adminMiddleware, upload.fields(articleInputFields), a
 const userInputFields = [{ name: 'username' }, { name: 'email' }, { name: 'password' }];
 router.get('/user', adminMiddleware, adminUserController.getAllUsers);
 router.get('/user/:id', adminMiddleware, adminUserController.getOneUser);
-router.put('/user/:id', adminMiddleware, upload.fields(userInputFields), adminUserController.updatePassword);
+router.post('/user', adminMiddleware, upload.fields(userInputFields), adminUserController.createUser);
 router.delete('/user/:id', adminMiddleware, adminUserController.deleteUser);
 
 // Admin Contact
@@ -46,14 +45,18 @@ router.post('/image', adminMiddleware, upload.single('image'), adminImageControl
 router.get('/image/:id', adminMiddleware, adminImageController.getImage);
 
 // Admin Tag
-const tagInputFields = [{ name: 'title' }, { name: 'slug' }];
+const tagInputFields = [{ name: 'title' }, { name: 'slug' }, { name: 'description' }];
 router.get('/tag', adminMiddleware, adminTagController.getAllTags);
 router.get('/tag/:id', adminMiddleware, adminTagController.getOneTag);
 router.post('/tag', adminMiddleware, upload.fields(tagInputFields), adminTagController.createTag);
 router.put('/tag/:id', adminMiddleware, upload.fields(tagInputFields), adminTagController.updateTag);
 router.delete('/tag/:id', adminMiddleware, adminTagController.deleteTag);
 
+// Admin Role
 const roleInputFields = [{ name: 'name' }];
 router.get('/role', adminRoleController.getAllRoles);
+router.get('/role/:id', adminRoleController.getOneRole);
 router.post('/role', upload.fields(roleInputFields), adminRoleController.createRole);
+router.put('/role/:id', upload.fields(roleInputFields), adminRoleController.updateRole);
+
 module.exports = router;

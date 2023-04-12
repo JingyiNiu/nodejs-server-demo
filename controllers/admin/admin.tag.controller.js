@@ -1,21 +1,16 @@
-const connection = require('../../config/databse');
 const Joi = require('joi');
-
-const tag_table = 'tags';
+const Tag = require('../../models/Tag.model');
 
 const adminTagController = {
     getAllTags: async (req, res) => {
-        const sql = `SELECT * FROM ${tag_table}`;
-        const [rows, fields] = await connection.query(sql);
-        res.json({ data: rows });
+        const tags = await Tag.findAll();
+        res.json(tags);
     },
 
     getOneTag: async (req, res) => {
         const { id } = req.params;
-        const sql = `SELECT * FROM ${tag_table} 
-                    WHERE id = ? OR slug = ?`;
-        const [rows, fields] = await connection.query(sql, [id, id]);
-        res.json({ data: rows });
+        const tag = await Tag.findOne({ where: { id } });
+        res.json(tag);
     },
 
     createTag: async (req, res) => {
@@ -25,10 +20,8 @@ const adminTagController = {
             return;
         }
         const { name, slug, description } = req.body;
-        const sql = `INSERT INTO ${tag_table} (name, slug, description, created_at) 
-                    VALUES (?, ?, ?, ?)`;
-        const [rows, fields] = await connection.query(sql, [name, slug, description, new Date()]);
-        res.json({ data: 'Record created successfully' });
+        const tag = await Tag.create({ name, slug, description });
+        res.json(tag);
     },
 
     updateTag: async (req, res) => {
@@ -40,19 +33,16 @@ const adminTagController = {
 
         const { id } = req.params;
         const { name, slug, description } = req.body;
-        const sql = `UPDATE ${tag_table} 
-                    SET name = ?, slug = ?, description = ?, updated_at = ? 
-                    WHERE id = ? OR slug = ?`;
-        const [rows, fields] = await connection.query(sql, [name, slug, description, new Date(), id, id]);
-        res.json({ data: 'Record updated successfully' });
+        await Tag.update({ name, slug, description }, { where: { id } });
+
+        const updatedTag = await Tag.findOne({ where: { id } });
+        res.json(updatedTag);
     },
 
     deleteTag: async (req, res) => {
         const { id } = req.params;
-        const sql = `DELETE FROM ${tag_table} 
-                    WHERE id = ?`;
-        const [rows, fields] = await connection.query(sql, [id]);
-        res.json({ data: 'Record deleted successfully' });
+        await Tag.destroy({ where: { id } });
+        res.json({ message: 'Record deleted successfully' });
     },
 };
 

@@ -1,5 +1,7 @@
 const connection = require('../../config/databse');
 const Joi = require('joi');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 const User = require('../../models/User.model');
 const Role = require('../../models/Role.model');
@@ -29,20 +31,34 @@ const userController = {
         res.json({ user });
     },
 
-    updatePassword: async (req, res) => {
-        const { id } = req.params;
-        const sql = `SELECT * FROM ${user_table}
-                    WHERE id = ?`;
-        const [rows, fields] = await connection.query(sql, [id]);
-        res.json('Record updated successfully' );
+    createUser: async (req, res) => {
+        const { error } = validateUserForm(req.body);
+        if (error) {
+            res.status(400).json({ message: error.details[0].message });
+            return;
+        }
+        const { username, email, password, role_id } = req.body;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        await User.create({ username, email, role_id, password: hashedPassword });
+
+        res.status(200).send({ message: 'Record created successfully' });
     },
 
     deleteUser: async (req, res) => {
         const { id } = req.params;
-        const sql = `DELETE FROM ${user_table} WHERE id = ?`;
-        const [rows, fields] = await connection.query(sql, id);
-        res.json('Record deleted successfully deleted');
+        await User.destroy({ where: { id } });
+        res.json({ message: 'Record deleted successfully' });
     },
 };
 
 module.exports = userController;
+
+const validateUserForm = (userForm) => {
+    const schema = Joi.object({
+        username: Joi.string().min(2).max(50).required(),
+        email: Joi.string().min(2).max(100).email().required(),
+        password: Joi.string().min(6).max(256).required(),
+        role_id: Joi.string().min(1).max(1),
+    });
+    return schema.validate(userForm);
+};

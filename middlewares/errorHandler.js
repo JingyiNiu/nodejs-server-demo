@@ -7,6 +7,11 @@ module.exports = (error, req, res, next) => {
         errorMessage = 'Record already exists';
     }
 
+    if (error.name  === 'SequelizeUniqueConstraintError') {
+        errorStatus = 400;
+        errorMessage = 'Record already exists';
+    }
+
     res.status(errorStatus).json({
         message: errorMessage,
     });

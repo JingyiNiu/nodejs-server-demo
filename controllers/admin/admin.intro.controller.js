@@ -1,15 +1,15 @@
 const connection = require('../../config/databse');
 const Joi = require('joi');
 
-const intro_table = 'intros';
+const Intro = require('../../models/Intro.model');
 
 const introController = {
-    getIntroData: async (req, res) => {
-        const sql = `SELECT * FROM ${intro_table}`;
-        const [rows, fields] = await connection.query(sql);
-        res.json({ data: rows });
+    getIntros: async (req, res) => {
+        const intros = await Intro.findAll();
+        res.json(intros);
     },
-    updateIntroData: async (req, res) => {
+
+    updateIntro: async (req, res) => {
         const { error, value } = validateIntroForm(req.body);
         if (error) {
             res.status(400).json({ message: error.details[0].message });
@@ -18,11 +18,10 @@ const introController = {
 
         const { id } = req.params;
         const { title, content } = req.body;
-        const sql = `UPDATE ${intro_table} 
-                    SET title = ?, content = ?, updated_at = ? 
-                    WHERE id = ?`;
-        const [rows, fields] = await connection.query(sql, [title, content, new Date(), id]);
-        res.json({ data: 'Record updated successfully' });
+        await Intro.update({ title, content }, { where: { id } });
+
+        const updatedIntro = await Intro.findOne({ where: { id } });
+        res.json(updatedIntro);
     },
 };
 

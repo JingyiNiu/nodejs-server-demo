@@ -1,5 +1,5 @@
-const connection = require('../../config/databse');
 const Joi = require('joi');
+const sequelize = require('../../config/databse');
 
 const Article = require('../../models/Article.model');
 const Tag = require('../../models/Tag.model');
@@ -38,15 +38,18 @@ const adminArticleController = {
             return;
         }
         const { title, slug, content, is_public, sort_order, tags } = req.body;
-        const sql = `INSERT INTO ${article_table} (title, slug, content, is_public, sort_order, created_at) 
-                    VALUES (?, ?, ?, ?, ?, ?)`;
-        const [result] = await connection.query(sql, [title, slug, content, is_public, sort_order, new Date()]);
 
-        const newArticleId = result.insertId;
-        const sqlInsertArticleTag = `INSERT INTO ${article_tag_table} (article_id, tag_id) VALUES ?`;
-        const values = tags.map((tagId) => [newArticleId, tagId]);
-        await connection.query(sqlInsertArticleTag, [values]);
-        res.json({ data: 'Record created successfully' });
+        const article = await sequelize.transaction(async (t) => {
+            const article = await Article.create({ title, slug, content, is_public, sort_order }, { transaction: t });
+
+            for (const tagId of tags) {
+                await article.addTag(tagId, { transaction: t });
+            }
+
+            return article;
+        });
+
+        res.json(article);
     },
 
     updateArticle: async (req, res) => {
@@ -59,15 +62,20 @@ const adminArticleController = {
         const { id } = req.params;
         const { title, slug, content, is_public, sort_order, tags } = req.body;
 
-        const sql = `UPDATE ${article_table} 
-                    SET title = ?, slug = ?, content = ?, is_public = ?, sort_order = ?, updated_at = ? 
-                    WHERE id = ? OR slug = ?`;
-        const [result] = await connection.query(sql, [title, slug, content, is_public, sort_order, new Date(), id, id]);
+        await sequelize.transaction(async (t) => {
+            const article = await Article.findOne({ where: { id } }, { transaction: t });
 
-        const update_tag_sql = `INSERT INTO ${article_tag_table} (article_id, tag_id) VALUES ?`;
-        const values = tags.map((tagId) => [id, tagId]);
-        await connection.query(update_tag_sql, [values]);
-        res.json({ data: result });
+            await article.setTags(tags, { transaction: t });
+
+            await article.update({ title, slug, content, is_public, sort_order }, { transaction: t });
+        });
+
+        const updatedArticle = await Article.findOne({
+            where: { id },
+            include: { model: Tag, through: { attributes: [] } },
+        });
+
+        res.json(updatedArticle);
     },
 };
 

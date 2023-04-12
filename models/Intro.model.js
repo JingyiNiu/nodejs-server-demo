@@ -1,31 +1,27 @@
 const sequelize = require('../config/databse');
 const { DataTypes } = require('sequelize');
 
-const Contact = sequelize.define(
-    'contact',
+const Intro = sequelize.define(
+    'intro',
     {
         id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
+            allowNull: false,
             primaryKey: true,
-            autoIncrement: true,
         },
-        name: {
+        title: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        email: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        message: {
+        content: {
             type: DataTypes.STRING,
             allowNull: false,
         },
     },
     {
-        tableName: 'contacts',
+        tableName: 'intros',
         timestamps: false,
     }
 );
 
-module.exports = Contact;
+module.exports = Intro;

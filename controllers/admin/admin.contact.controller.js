@@ -11,9 +11,7 @@ const adminController = {
 
     getOneContact: async (req, res) => {
         const { id } = req.params;
-        const contact = await Contact.findOne({
-            where: { id },
-        });
+        const contact = await Contact.findOne({ where: { id } });
         res.json({ contact });
     },
 };

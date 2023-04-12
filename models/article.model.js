@@ -35,7 +35,7 @@ const Article = sequelize.define(
         },
         view_count: {
             type: DataTypes.INTEGER,
-            allowNull: false,
+            allowNull: true,
         },
     },
     {
