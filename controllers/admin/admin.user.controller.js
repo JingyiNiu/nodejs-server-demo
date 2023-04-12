@@ -1,4 +1,3 @@
-const connection = require('../../config/databse');
 const Joi = require('joi');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;

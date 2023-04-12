@@ -1,5 +1,5 @@
 const Joi = require('joi');
-const sequelize = require('../../config/databse');
+const sequelize = require('../../config/database');
 
 const Article = require('../../models/Article.model');
 const Tag = require('../../models/Tag.model');

@@ -1,4 +1,3 @@
-const connection = require('../../config/databse');
 const Joi = require('joi');
 
 const Contact = require('../../models/Contact.model');

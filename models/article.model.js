@@ -1,7 +1,7 @@
-const sequelize = require('../config/databse');
+const sequelize = require('../config/database');
 const { DataTypes } = require('sequelize');
-const Tag = require('./Tag.model');
 const ArticleTag = require('./ArticleTag.model');
+const Tag = require('./Tag.model');
 
 const Article = sequelize.define(
     'article',
