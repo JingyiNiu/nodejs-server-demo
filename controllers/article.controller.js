@@ -17,7 +17,8 @@ const articleController = {
                 through: { attributes: [] },
             },
         });
-        res.json(articles);
+        const tags = await Tag.findAll();
+        res.json({ articles: articles, tags: tags });
     },
 
     getOneArticle: async (req, res) => {
