@@ -16,10 +16,6 @@ const Article = sequelize.define(
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        title: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
         slug: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -29,7 +25,19 @@ const Article = sequelize.define(
             type: DataTypes.INTEGER,
             allowNull: false,
         },
+        title: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
         content: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        title_zh: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        content_zh: {
             type: DataTypes.STRING,
             allowNull: false,
         },

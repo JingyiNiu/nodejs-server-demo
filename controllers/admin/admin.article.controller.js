@@ -37,10 +37,10 @@ const adminArticleController = {
             res.status(400).json({ message: error.details[0].message });
             return;
         }
-        const { title, slug, content, is_public, sort_order, tags } = req.body;
+        const { title, slug, content, title_zh, content_zh, is_public, sort_order, tags } = req.body;
 
         const article = await sequelize.transaction(async (t) => {
-            const article = await Article.create({ title, slug, content, is_public, sort_order }, { transaction: t });
+            const article = await Article.create({ title, slug, content, title_zh, content_zh, is_public, sort_order }, { transaction: t });
 
             for (const tagId of tags) {
                 await article.addTag(tagId, { transaction: t });
@@ -60,14 +60,14 @@ const adminArticleController = {
         }
 
         const { id } = req.params;
-        const { title, slug, content, is_public, sort_order, tags } = req.body;
+        const { title, slug, content, title_zh, content_zh, is_public, sort_order, tags } = req.body;
 
         await sequelize.transaction(async (t) => {
             const article = await Article.findOne({ where: { id } }, { transaction: t });
 
             await article.setTags(tags, { transaction: t });
 
-            await article.update({ title, slug, content, is_public, sort_order }, { transaction: t });
+            await article.update({ title, slug, content, title_zh, content_zh, is_public, sort_order }, { transaction: t });
         });
 
         const updatedArticle = await Article.findOne({
@@ -83,11 +83,13 @@ module.exports = adminArticleController;
 
 const validateArticleForm = (articleForm) => {
     const schema = Joi.object({
-        title: Joi.string().min(2).max(100).required(),
         slug: Joi.string().min(2).max(100).required(),
-        content: Joi.string().min(2).required(),
-        is_public: Joi.number(),
         sort_order: Joi.number(),
+        is_public: Joi.number(),
+        title: Joi.string().min(2).max(100).required(),
+        content: Joi.string().min(2).required(),
+        title_zh: Joi.string().min(2).max(100).required(),
+        content_zh: Joi.string().min(2).required(),
         tags: Joi.array(),
     });
     return schema.validate(articleForm);
