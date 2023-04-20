@@ -10,8 +10,8 @@ const contactController = {
         }
 
         const { name, email, message } = req.body;
-        const result = await Contact.create({ name, email, message });
-        res.json(result);
+        const contact = await Contact.create({ name, email, message });
+        res.json(contact);
     },
 };
 

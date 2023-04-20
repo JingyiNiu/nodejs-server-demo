@@ -14,7 +14,7 @@ const userController = {
                 attributes: ['name'],
             },
         });
-        res.json({ users });
+        res.json(users);
     },
 
     getOneUser: async (req, res) => {
@@ -27,7 +27,7 @@ const userController = {
                 attributes: ['name'],
             },
         });
-        res.json({ user });
+        res.json(user);
     },
 
     createUser: async (req, res) => {
