@@ -6,6 +6,7 @@ const adminMiddleware = require('../middlewares/adminMiddleware');
 const upload = multer({ storage: multer.memoryStorage() });
 
 const adminValidateController = require('../controllers/admin/admin.validate.controller');
+const adminDashboardController = require('../controllers/admin/admin.dashboard.controller');
 const adminIntroController = require('../controllers/admin/admin.intro.controller');
 const adminArticleController = require('../controllers/admin/admin.article.controller');
 const adminContactController = require('../controllers/admin/admin.contact.controller');
@@ -16,6 +17,9 @@ const adminRoleController = require('../controllers/admin/admin.role.controller'
 
 // Admin Validate
 router.get('/validate', adminMiddleware, adminValidateController.validateAdmin);
+
+// Admin Dashboard
+router.get('/dashboard', adminMiddleware, adminDashboardController.getDashboardInfo);
 
 // Admin Intro
 const homeInputFields = [{ name: 'intro_en' }, { name: 'intro_zh' }];
