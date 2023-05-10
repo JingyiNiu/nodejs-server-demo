@@ -31,12 +31,13 @@ const adminTagController = {
             return;
         }
 
-        const { id } = req.params;
-        const { name, slug, description } = req.body;
-        await Tag.update({ name, slug, description }, { where: { id } });
+        const { tagid } = req.params;
 
-        const updatedTag = await Tag.findOne({ where: { id } });
-        res.json(updatedTag);
+        const { id, name, slug, description } = req.body;
+
+        const data = await Tag.update({ id, name, slug, description }, { where: { id: tagid } });
+
+        res.json(data);
     },
 
     deleteTag: async (req, res) => {
@@ -50,6 +51,7 @@ module.exports = adminTagController;
 
 const validateTagForm = (articleForm) => {
     const schema = Joi.object({
+        id: Joi.number(),
         name: Joi.string().min(2).max(100).required(),
         slug: Joi.string().min(2).max(100).required(),
         description: Joi.string().required(),

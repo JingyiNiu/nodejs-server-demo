@@ -53,7 +53,7 @@ const tagInputFields = [{ name: 'title' }, { name: 'slug' }, { name: 'descriptio
 router.get('/tag', adminMiddleware, adminTagController.getAllTags);
 router.get('/tag/:id', adminMiddleware, adminTagController.getOneTag);
 router.post('/tag', adminMiddleware, upload.fields(tagInputFields), adminTagController.createTag);
-router.put('/tag/:id', adminMiddleware, upload.fields(tagInputFields), adminTagController.updateTag);
+router.put('/tag/:tagid', adminMiddleware, upload.fields(tagInputFields), adminTagController.updateTag);
 router.delete('/tag/:id', adminMiddleware, adminTagController.deleteTag);
 
 // Admin Role
